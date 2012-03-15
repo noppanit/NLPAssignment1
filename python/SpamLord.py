@@ -3,7 +3,23 @@ import os
 import re
 import pprint
 
-my_first_pat = '(\w+)@(\w+).edu'
+"""
+lam at cs.stanford.edu
+ashishg @ stanford.edu
+patrick.young@stanford.edu
+dabo@cs.stanford.edu 
+d-l-w-h-@-s-t-a-n-f-o-r-d-.-e-d-u
+jks at robotics;stanford;edu
+vladlen%20at%20stanford%20dot%20edu
+
+
+650-724-1915
+(650)814-1478
+(650) 725-4089
+"""
+
+my_email_pattern = '(\w+\.)?(\w+) ?@ ?(\w+.)?(\w+).(edu|com)'
+my_phone_pattern = '\(?([0-9]{3})\)?-?([0-9]{3})-([0-9]{4})'
 
 """ 
 TODO
@@ -31,10 +47,17 @@ def process_file(name, f):
     # sys.stderr.write('[process_file]\tprocessing file: %s\n' % (path))
     res = []
     for line in f:
-        matches = re.findall(my_first_pat,line)
-        for m in matches:
-            email = '%s@%s.edu' % m
+        email_matches = re.findall(my_email_pattern,line)
+		
+        for m in email_matches:
+            email = '%s%s@%s%s.%s' % m
             res.append((name,'e',email))
+
+        phone_matches = re.findall(my_phone_pattern,line)
+
+        for m in phone_matches:
+            phone = '%s-%s-%s' % m
+            res.append((name,'p',phone))
     return res
 
 """
